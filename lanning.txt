@@ -1,0 +1,16 @@
+need controller class
+
+have model, view, controller for each
+ideally
+no
+want controller to contain both model and view for bomb to access
+controller passes reference to bombmodel (and bombview?) to its model and view
+
+==========
+todo create frames first, then make bombmodel, then attach module list to frame
+frame (bombview) will use tk grid on each module's canvas
+bombmodel will communicate with module controllers
+controllers will have binds within canvas for each canvas object (e.g. rectangle)
+edgeworkview will have bombmodel reference; bombmodel will trigger the update for edgeworkview if
+    strike gets updated.
+the timer part of edgeworkview will be constantly refreshed to show the remaining time
