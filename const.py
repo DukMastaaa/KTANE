@@ -8,6 +8,7 @@ STRIKE_TO_COUNTDOWN_SPEED = {
     1: 1.25,
     2: 1.5
 }
+DEFAULT_TIME_LIMIT = 60 * 5
 
 # Global Module View
 VIEW_MODULES_WIDTH = 5  # How many modules fit in width of BombView
