@@ -25,7 +25,7 @@ MODULE_LED_SOLVED = "green"
 MODULE_LED_WRONG = "red"
 
 # Edgework View
-pass
+EVIEW_FONT_TIMER_STRIKES = ("Courier", 20)
 
 # Indicators
 IND_ON = True

@@ -1,3 +1,6 @@
+import tkinter as tk
+from typing import List
+
 import BaseModule
 import Bomb
 import const
@@ -6,8 +9,8 @@ import random
 
 
 class SimpleWiresModel(BaseModule.ModuleModel):
-    def __init__(self, bomb: Bomb):
-        super().__init__(bomb)
+    def __init__(self, controller: "SimpleWiresController"):
+        super().__init__(controller)
         self._wires = []
         self._cut_wires = set()  # stores indices of the cut wires
         self._solution = self.solution()
@@ -65,17 +68,53 @@ class SimpleWiresModel(BaseModule.ModuleModel):
         if index in self._cut_wires:
             return None
         self._cut_wires.add(index)
+        if index == self._solution:
+            self.controller.make_solved()
+        else:
+            self.controller.add_strike()
+
+    def get_wires(self) -> List[str]:
+        return self._wires
 
 
 class SimpleWiresView(BaseModule.ModuleView):
-    def __init__(self, ):
-        super().__init__()
+    TOP_XY_OFFSET = 5
+    WIRE_WIDTH = 80
+    WIRE_HEIGHT = 10
+    WIRE_GAP = 5
+
+    def __init__(self, bomb_view: Bomb.BombView, controller: SimpleWiresController):
+        super().__init__(bomb_view, controller)
+        self._wires = []
+
+    def attach_wire_list(self, wires: List[str]) -> None:
+        """Saves a reference to the wires list from `SimpleWiresModel`."""
+        self._wires = wires
+        self.draw_wires()
+
+    def draw_wires(self) -> None:
+        top_x, top_y = self.TOP_XY_OFFSET, self.TOP_XY_OFFSET
+        for index, wire in enumerate(self._wires):
+            top_y += self.WIRE_GAP
+            rect_id = self.create_rectangle(
+                top_x, top_y, top_x + self.WIRE_WIDTH, top_y + self.WIRE_HEIGHT,
+                fill=wire, outline="black"
+            )
+            self.tag_bind(rect_id, "<ButtonPress-1>",
+                          lambda event: self.on_wire_click(index, rect_id))
+
+    def on_wire_click(self, wire_index: int, rect_id) -> None:
+        """Handles clicking a wire."""
+        self.itemconfigure(rect_id, state=tk.HIDDEN)
+        self.controller.cut_wire(wire_index)
 
 
 class SimpleWiresController(BaseModule.ModuleController):
     model_class = SimpleWiresModel
     view_class = SimpleWiresView
 
-    def __init__(self, bomb_reference):
-        super().__init__()  # todo: uhhh
-        # add bindings to rectangles in view class
+    def __init__(self, bomb_reference: Bomb.BombModel, parent_reference: tk.Frame):
+        super().__init__(bomb_reference, parent_reference)
+
+    def cut_wire(self, wire_index: int) -> None:
+        self.model.cut_wire(wire_index)

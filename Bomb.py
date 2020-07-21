@@ -140,8 +140,14 @@ class BombModel(object):
 
     def start_game(self) -> None:
         """Starts the game and timer."""
+        self.check_edgework_view_attached()
         self.timer.start_timing()
         self._edgework_view.start_timing()
+
+    def check_edgework_view_attached(self) -> None:
+        """Checks whether an edgework view has been attached. Quits otherwise."""
+        if not isinstance(self._edgework_view, EdgeworkView):
+            raise TypeError("Edgework view not attached to bomb model.")
 
 
 class BombView(tk.Frame):
@@ -166,14 +172,16 @@ class EdgeworkView(tk.Frame):
         super().__init__(master)
         self._master = master
         self._bomb = bomb_reference
-        self._timer_label = tk.Label(self, text="00:00.00", font=("Courier", 20))
+
+        self._timer_label = tk.Label(self, text="00:00.00", font=const.EVIEW_FONT_TIMER_STRIKES)
         self._timer_label.pack(side=tk.TOP, anchor=tk.CENTER, fill=tk.X)
-        self._strike_label = tk.Label(self, text="-", font=("Courier", 20), foreground="red")
+        self._strike_label = tk.Label(self, text="-", font=const.EVIEW_FONT_TIMER_STRIKES, fg="red")
         self._strike_label.pack(side=tk.TOP, anchor=tk.CENTER, fill=tk.X)
 
     def start_timing(self) -> None:
         # todo: ok what, am i really polling the timer every 0.1s
-        # yes i am, this is disgusting code
+        # yes i am, this is disgusting. but can't see a better way
+        # can't sync with the CountdownTimer since it uses threading.Timer not tk.after
         self._timer_label.config(text=self._bomb.get_f_time())
         self.after(int(const.TIME_STEP * 1000), self.start_timing)
 
@@ -181,7 +189,6 @@ class EdgeworkView(tk.Frame):
         """Updates the amount of strikes shown on EdgeworkView."""
         strike_str = "-" if strikes == 0 else "X" * strikes
         self._timer_label.config(text=strike_str)
-
 
         # todo: countdown timer display (get reference to BombModel CountdownTimer)
         # todo: BombModel updates state => EdgeworkView notified, updates view by querying BombModel

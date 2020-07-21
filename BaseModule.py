@@ -1,4 +1,4 @@
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 
 import tkinter as tk
 
@@ -30,8 +30,9 @@ class ModuleModel(object):
 
 
 class ModuleView(tk.Canvas):
-    def __init__(self, parent):
+    def __init__(self, parent, controller: "ModuleController", *args):
         super().__init__(parent)
+        self.controller = controller
         self.led_id = self.create_oval(
             const.MODULE_WIDTH - const.MODULE_LED_DIAMETER - const.MODULE_LED_PAD,
             const.MODULE_LED_PAD,
@@ -44,7 +45,7 @@ class ModuleView(tk.Canvas):
         """Makes the current module solved."""
         self.itemconfigure(self.led_id, fill=const.MODULE_LED_SOLVED)
 
-    def flash_wrong(self, previous_fill: Optional[str]) -> None:
+    def flash_wrong(self, previous_fill: str = None) -> None:
         """Flashes red on the led."""
         if previous_fill is not None:
             self.itemconfigure(self.led_id, fill=previous_fill)
@@ -58,13 +59,15 @@ class ModuleController(object):
     model_class = ModuleModel
     view_class = ModuleView
 
-    def __init__(self, bomb_reference: Bomb.BombModel, parent_reference: tk.Frame):
+    def __init__(self, bomb_reference: Bomb.BombModel, parent_reference: tk.Frame, *args):
+        # todo: am i even using *args here? not that useful tbh but i'll keep it for now
         self._bomb = bomb_reference
         self.model = self.model_class(self)
-        self.view = self.view_class(parent_reference)
+        self.view = self.view_class(parent_reference, *args)
 
     def add_strike(self) -> None:
         self._bomb.add_strike()
+        self.view.flash_wrong()
 
     def get_time(self) -> float:
         return self._bomb.get_time()
@@ -80,3 +83,6 @@ class ModuleController(object):
 
     def get_serial(self) -> str:
         return self._bomb.serial
+
+    def make_solved(self) -> None:
+        self.view.make_solved()
