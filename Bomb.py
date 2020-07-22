@@ -76,7 +76,6 @@ class BombModel(object):
         self._edgework_view = None
 
         self.modules = []
-        self.init_modules()
 
     def init_edgework(self) -> None:
         # Indicators
@@ -103,9 +102,9 @@ class BombModel(object):
         self.serial += random.choice(const.NUMER)
         # todo: surely optimise. this looks really cramped and repetitive
 
-    def init_modules(self) -> None:
-        # todo: assert len(modules) <= MODULES_WIDTH * MODULES_HEIGHT
-        pass  # todo: somehow load modules into self.modules list
+    def attach_modules(self, modules: list) -> None:
+        self.modules = modules
+        assert len(modules) <= const.VIEW_MODULES_WIDTH * const.VIEW_MODULES_HEIGHT
 
     def attach_edgework_view(self, view: "EdgeworkView") -> None:
         """Saves a reference to the program's `EdgeworkView` object."""
@@ -124,12 +123,13 @@ class BombModel(object):
         print("You won the game")
 
     def add_strike(self) -> None:
-        self._strikes += 1
-        self._edgework_view.update_strikes(self._strikes)
-        if self._strikes >= const.STRIKE_LIMIT:
-            self.timer.stop_timing()
-        else:
-            self.timer.set_countdown_speed(const.STRIKE_TO_COUNTDOWN_SPEED[self._strikes])
+        if self._strikes < const.STRIKE_LIMIT:
+            self._strikes += 1
+            self._edgework_view.update_strikes(self._strikes)
+            if self._strikes >= const.STRIKE_LIMIT:
+                self.timer.stop_timing()
+            else:
+                self.timer.set_countdown_speed(const.STRIKE_TO_COUNTDOWN_SPEED[self._strikes])
 
     def get_time(self) -> float:
         return self.timer.get_time()
@@ -153,6 +153,7 @@ class BombModel(object):
 class BombView(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
+        self.config(width=const.VIEW_MODULES_PX_WIDTH, height=const.VIEW_MODULES_PX_HEIGHT)
         self._master = master
         self.modules = []
 
@@ -161,34 +162,48 @@ class BombView(tk.Frame):
     def attach_module_list(self, modules) -> None:
         """Stores the reference to the BombModel's module list."""
         self.modules = modules
+        self.draw_modules()
+
+    def draw_modules(self) -> None:
         for index, controller in enumerate(self.modules):
-            self.grid(row=(index // const.VIEW_MODULES_WIDTH),
-                      column=(index % const.VIEW_MODULES_WIDTH))
+            controller.view.grid(row=(index // const.VIEW_MODULES_WIDTH),
+                                 column=(index % const.VIEW_MODULES_WIDTH))
             # todo: see how this deals with empty spots in the grid.
 
 
+class IndicatorLabel(tk.Label):
+    def __init__(self, parent, text: str, on: bool):
+        label_text = text + (const.LIT_CIRCLE if on else const.UNLIT_CIRCLE)
+        super().__init__(parent, text=label_text, bg=const.INDICATOR_BG, fg=const.INDICATOR_FG,
+                         font=const.INDICATOR_FONT)
+
+
 class EdgeworkView(tk.Frame):
-    def __init__(self, master, bomb_reference: BombModel):
+    def __init__(self, master, bomb_model: BombModel):
         super().__init__(master)
         self._master = master
-        self._bomb = bomb_reference
+        self._bomb_model = bomb_model
 
         self._timer_label = tk.Label(self, text="00:00.00", font=const.EVIEW_FONT_TIMER_STRIKES)
         self._timer_label.pack(side=tk.TOP, anchor=tk.CENTER, fill=tk.X)
         self._strike_label = tk.Label(self, text="-", font=const.EVIEW_FONT_TIMER_STRIKES, fg="red")
         self._strike_label.pack(side=tk.TOP, anchor=tk.CENTER, fill=tk.X)
 
+        self._indicator_frame = tk.Frame(self)
+        for ind_name, status in self._bomb_model.indicators:
+            print(ind_name, status)
+            indicator = IndicatorLabel(self._indicator_frame, ind_name, status)
+            indicator.pack(side=tk.TOP, anchor=tk.CENTER)
+        self._indicator_frame.pack(side=tk.TOP, anchor=tk.CENTER, fill=tk.X)
+
     def start_timing(self) -> None:
         # todo: ok what, am i really polling the timer every 0.1s
         # yes i am, this is disgusting. but can't see a better way
         # can't sync with the CountdownTimer since it uses threading.Timer not tk.after
-        self._timer_label.config(text=self._bomb.get_f_time())
+        self._timer_label.config(text=self._bomb_model.get_f_time())
         self.after(int(const.TIME_STEP * 1000), self.start_timing)
 
     def update_strikes(self, strikes: int) -> None:
         """Updates the amount of strikes shown on EdgeworkView."""
         strike_str = "-" if strikes == 0 else "X" * strikes
-        self._timer_label.config(text=strike_str)
-
-        # todo: countdown timer display (get reference to BombModel CountdownTimer)
-        # todo: BombModel updates state => EdgeworkView notified, updates view by querying BombModel
+        self._strike_label.config(text=strike_str)

@@ -30,8 +30,11 @@ class ModuleModel(object):
 
 
 class ModuleView(tk.Canvas):
-    def __init__(self, parent, controller: "ModuleController", *args):
+    def __init__(self, parent, controller, *args):
         super().__init__(parent)
+        self.config(highlightthickness=const.MODULE_BORDER_WIDTH,
+                    highlightbackground=const.MODULE_BORDER_COLOUR,
+                    height=const.MODULE_HEIGHT, width=const.MODULE_WIDTH)
         self.controller = controller
         self.led_id = self.create_oval(
             const.MODULE_WIDTH - const.MODULE_LED_DIAMETER - const.MODULE_LED_PAD,
@@ -45,17 +48,20 @@ class ModuleView(tk.Canvas):
         """Makes the current module solved."""
         self.itemconfigure(self.led_id, fill=const.MODULE_LED_SOLVED)
 
-    def flash_wrong(self, previous_fill: str = None) -> None:
+    def flash_wrong(self) -> None:
         """Flashes red on the led."""
-        if previous_fill is not None:
-            self.itemconfigure(self.led_id, fill=previous_fill)
-        else:
-            current_fill = self.itemcget(self.led_id, "fill")
-            self.itemconfigure(self.led_id, fill=const.MODULE_LED_WRONG)
-            self.after(500, self.flash_wrong, current_fill)
+        self.itemconfigure(self.led_id, fill=const.MODULE_LED_WRONG)
+        self.after(500, self.restore_flash)
+
+    def restore_flash(self) -> None:
+        """Resets the led to the correct colour."""
+        self.itemconfigure(self.led_id,
+                           fill=const.MODULE_LED_SOLVED if self.controller.is_solved
+                           else const.MODULE_LED_NEUTRAL)
 
 
 class ModuleController(object):
+    # todo: there's something not right here - pycharm doesn't know these have been overridden
     model_class = ModuleModel
     view_class = ModuleView
 
@@ -63,7 +69,8 @@ class ModuleController(object):
         # todo: am i even using *args here? not that useful tbh but i'll keep it for now
         self._bomb = bomb_reference
         self.model = self.model_class(self)
-        self.view = self.view_class(parent_reference, *args)
+        self.view = self.view_class(parent_reference, self, *args)
+        self.is_solved = False
 
     def add_strike(self) -> None:
         self._bomb.add_strike()
@@ -85,4 +92,5 @@ class ModuleController(object):
         return self._bomb.serial
 
     def make_solved(self) -> None:
+        self.is_solved = True
         self.view.make_solved()

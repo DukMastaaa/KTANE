@@ -14,3 +14,8 @@ controllers will have binds within canvas for each canvas object (e.g. rectangle
 edgeworkview will have bombmodel reference; bombmodel will trigger the update for edgeworkview if
     strike gets updated.
 the timer part of edgeworkview will be constantly refreshed to show the remaining time
+
+import layout:
+- app
+  - bomb
+    -

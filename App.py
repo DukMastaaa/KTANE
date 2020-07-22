@@ -1,4 +1,5 @@
 import Bomb
+import ModuleManager
 import const
 import tkinter as tk
 # todo: possibly a tk.Menu at the top?
@@ -7,8 +8,10 @@ import tkinter as tk
 class KTANEApp(object):
     def __init__(self, master: tk.Tk):
         self._master = master
+        self._master.geometry(const.APP_GEOMETRY)
         self.mview = Bomb.BombView(self._master)
         self.model = Bomb.BombModel(const.DEFAULT_TIME_LIMIT)
+        self.model.attach_modules(ModuleManager.get_module_list(self.model, self.mview))
         self.mview.attach_module_list(self.model.modules)
         self.eview = Bomb.EdgeworkView(self._master, self.model)
         self.model.attach_edgework_view(self.eview)

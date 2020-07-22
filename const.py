@@ -10,22 +10,31 @@ STRIKE_TO_COUNTDOWN_SPEED = {
 }
 DEFAULT_TIME_LIMIT = 60 * 5
 
-# Global Module View
-VIEW_MODULES_WIDTH = 5  # How many modules fit in width of BombView
-VIEW_MODULES_HEIGHT = 3  # How many modules fit in height of BombView
-
 # Module Views
+MODULE_BORDER_WIDTH = 1
+MODULE_BORDER_COLOUR = "black"
 MODULE_WIDTH = 200
 MODULE_HEIGHT = 200
 MODULE_BG = "gray"
 MODULE_LED_DIAMETER = 20
-MODULE_LED_PAD = 5
+MODULE_LED_PAD = 20
 MODULE_LED_NEUTRAL = "white"
 MODULE_LED_SOLVED = "green"
 MODULE_LED_WRONG = "red"
 
+# Global Module View
+VIEW_MODULES_WIDTH = 4  # How many modules fit in width of BombView
+VIEW_MODULES_HEIGHT = 3  # How many modules fit in height of BombView
+VIEW_MODULES_PX_WIDTH = (MODULE_WIDTH + MODULE_BORDER_WIDTH) * VIEW_MODULES_WIDTH
+VIEW_MODULES_PX_HEIGHT = (MODULE_HEIGHT + MODULE_BORDER_WIDTH) * VIEW_MODULES_HEIGHT + 10
+
 # Edgework View
 EVIEW_FONT_TIMER_STRIKES = ("Courier", 20)
+EVIEW_WIDTH = 300
+
+# App
+# todo: `APP_GEOMETRY` definition subject to change if UI changes
+APP_GEOMETRY = f"{VIEW_MODULES_PX_WIDTH+EVIEW_WIDTH}x{VIEW_MODULES_PX_HEIGHT}"
 
 # Indicators
 IND_ON = True
@@ -43,6 +52,13 @@ IND_BOB = "BOB"
 IND_FRK = "FRK"
 INDICATORS = [IND_SND, IND_CLR, IND_CAR, IND_IND, IND_FRK, IND_SIG, IND_NSA, IND_MSA,
               IND_TRN, IND_BOB, IND_FRK]
+
+# Indicator Label
+LIT_CIRCLE = "●"
+UNLIT_CIRCLE = "○"
+INDICATOR_BG = "dim gray"
+INDICATOR_FG = "white"
+INDICATOR_FONT = ("Courier", 20)
 
 # Batteries
 BAT_AA = "AA"
