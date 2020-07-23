@@ -9,5 +9,3 @@ will import the module file, so importing `Bomb` will result in a circular impor
 
 ## View class
 1. Inherit from `BaseModule.ModuleView`.
- 
-

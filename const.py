@@ -65,6 +65,9 @@ BAT_AA = "AA"
 BAT_D = "D"
 BATTERIES = [BAT_AA, BAT_D]
 
+# Battery Label
+pass
+
 # Ports
 PRT_DVID = "DVI-D"
 PRT_PARA = "PARALLEL"
@@ -74,9 +77,17 @@ PRT_SRL = "SERIAL"
 PRT_RCA = "RCA"
 PORTS = [PRT_DVID, PRT_PARA, PRT_PS2, PRT_RJ45, PRT_SRL, PRT_RCA]
 
+# Port Label
+pass
+
 # Serial
 ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXZ"  # "Y" omitted
 NUMER = "0123456789"
+
+# Serial Label
+SERIAL_FONT = ("Courier", 20)
+SERIAL_BG = "dim gray"
+SERIAL_FG = "white"
 
 # Colours
 COL_RED = "red"

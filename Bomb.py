@@ -168,13 +168,26 @@ class BombView(tk.Frame):
         for index, controller in enumerate(self.modules):
             controller.view.grid(row=(index // const.VIEW_MODULES_WIDTH),
                                  column=(index % const.VIEW_MODULES_WIDTH))
-            # todo: see how this deals with empty spots in the grid.
 
 
 class IndicatorLabel(tk.Label):
     def __init__(self, parent, text: str, on: bool):
         label_text = text + (const.LIT_CIRCLE if on else const.UNLIT_CIRCLE)
         super().__init__(parent, text=label_text, bg=const.INDICATOR_BG, fg=const.INDICATOR_FG,
+                         font=const.INDICATOR_FONT)
+
+
+class BatteryLabel(tk.Label):
+    def __init__(self, parent, battery_type: str):
+        # todo: implement images instead of text
+        super().__init__(parent, text=battery_type, bg="dim gray", fg="white",
+                         font=const.INDICATOR_FONT)
+
+
+class PortLabel(tk.Label):
+    def __init__(self, parent, port_type: str):
+        # todo: implement images instead of text
+        super().__init__(parent, text=port_type, bg="dim gray", fg="white",
                          font=const.INDICATOR_FONT)
 
 
@@ -191,10 +204,32 @@ class EdgeworkView(tk.Frame):
 
         self._indicator_frame = tk.Frame(self)
         for ind_name, status in self._bomb_model.indicators:
-            print(ind_name, status)
             indicator = IndicatorLabel(self._indicator_frame, ind_name, status)
             indicator.pack(side=tk.TOP, anchor=tk.CENTER)
-        self._indicator_frame.pack(side=tk.TOP, anchor=tk.CENTER, fill=tk.X)
+        self._indicator_frame.pack(side=tk.TOP, anchor=tk.N, fill=tk.X,
+                                   pady=10 if self._bomb_model.indicators else 0)
+
+        self._battery_frame = tk.Frame(self)
+        for battery_type in self._bomb_model.batteries:
+            battery = BatteryLabel(self._battery_frame, battery_type)
+            battery.pack(side=tk.TOP, anchor=tk.CENTER)
+        self._battery_frame.pack(side=tk.TOP, anchor=tk.N, fill=tk.X,
+                                 pady=10 if self._bomb_model.batteries else 0)
+
+        self._port_frame = tk.Frame(self)
+        for port_type in self._bomb_model.ports:
+            port = PortLabel(self._port_frame, port_type)
+            port.pack(side=tk.TOP, anchor=tk.CENTER)
+        self._port_frame.pack(side=tk.TOP, anchor=tk.N, fill=tk.X,
+                              pady=10 if self._bomb_model.ports else 0)
+
+        self._serial_label = tk.Label(self, text=self._bomb_model.serial,
+                                      font=const.SERIAL_FONT, bg=const.SERIAL_BG,
+                                      fg=const.SERIAL_FG)
+        self._serial_label.pack(side=tk.TOP, anchor=tk.CENTER, fill=tk.X,
+                                pady=10)
+
+        # todo: do images and reduce duplication omg ew
 
     def start_timing(self) -> None:
         # todo: ok what, am i really polling the timer every 0.1s
