@@ -5,6 +5,7 @@ from datetime import timedelta
 import const
 import random
 import tkinter as tk
+from tkinter import messagebox
 
 
 class CountdownTimer(object):
@@ -63,7 +64,8 @@ class CountdownTimer(object):
 
 
 class BombModel(object):
-    def __init__(self, initial_time: float = const.DEFAULT_TIME_LIMIT):
+    def __init__(self, initial_time: float, window_close_callback: Callable):
+        self._window_close_callback = window_close_callback
         self._strikes = 0
         self.timer = CountdownTimer(initial_time, const.STRIKE_TO_COUNTDOWN_SPEED[0],
                                     self.game_end)
@@ -117,10 +119,12 @@ class BombModel(object):
             self._game_win()
 
     def _game_lose(self) -> None:
-        print("You lost the game")
+        messagebox.showinfo(title="You lost!", message="You lost!")
+        # self._window_close_callback()  # todo: this doesn't work for some threading reason
 
     def _game_win(self) -> None:
-        print("You won the game")
+        messagebox.showinfo(title="You won!", message="You won!")
+        # self._window_close_callback()
 
     def add_strike(self) -> None:
         if self._strikes < const.STRIKE_LIMIT:

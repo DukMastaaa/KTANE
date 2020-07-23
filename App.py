@@ -10,7 +10,7 @@ class KTANEApp(object):
         self._master = master
         self._master.geometry(const.APP_GEOMETRY)
         self.mview = Bomb.BombView(self._master)
-        self.model = Bomb.BombModel(const.DEFAULT_TIME_LIMIT)
+        self.model = Bomb.BombModel(const.DEFAULT_TIME_LIMIT, self.on_window_close)
         self.model.attach_modules(ModuleManager.get_module_list(self.model, self.mview))
         self.mview.attach_module_list(self.model.modules)
         self.eview = Bomb.EdgeworkView(self._master, self.model)
@@ -25,6 +25,7 @@ class KTANEApp(object):
         """Stops the timer thread when the window is closed so python process can quit."""
         self.model.timer.stop_timing_no_callback()
         self._master.destroy()
+        quit()
 
 
 root = tk.Tk()

@@ -15,7 +15,7 @@ class SimpleWiresModel(BaseModule.ModuleModel):
         self._wires = []
         self.init_wires()
         self._cut_wires = set()  # stores indices of the cut wires
-        self._solution = self.solution()
+        self._solution = self.calc_solution()
 
     def init_wires(self) -> None:
         wire_count = random.randint(3, 6)
@@ -24,7 +24,7 @@ class SimpleWiresModel(BaseModule.ModuleModel):
                 [const.COL_RED, const.COL_BLACK, const.COL_BLUE, const.COL_YELLOW, const.COL_WHITE])
             )
 
-    def solution(self) -> int:
+    def calc_solution(self) -> int:
         """Returns the index of the wire to cut."""
         serial_last_odd = self.get_serial()[-1] in "13579"
         if len(self._wires) == 3:
