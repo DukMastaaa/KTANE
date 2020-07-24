@@ -25,7 +25,6 @@ class KTANEApp(object):
         """Stops the timer thread when the window is closed so python process can quit."""
         self.model.timer.stop_timing_no_callback()
         self._master.destroy()
-        quit()
 
 
 root = tk.Tk()

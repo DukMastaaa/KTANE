@@ -102,7 +102,7 @@ class SimpleWiresView(BaseModule.ModuleView):
             top_y += self.WIRE_GAP
             rect_id = self.create_rectangle(
                 top_x, top_y, top_x + self.WIRE_WIDTH, top_y + self.WIRE_HEIGHT,
-                fill=wire, outline="black"
+                fill=wire, outline=const.COL_BLACK
             )
             self.tag_bind(rect_id, "<ButtonPress-1>",
                           self.on_wire_click)

@@ -16,6 +16,9 @@ class ModuleModel(object):
     def get_time(self) -> float:
         return self.controller.get_time()
 
+    def get_f_time(self) -> str:
+        return self.controller.get_f_time()
+
     def get_indicators(self) -> List[Tuple[str, bool]]:
         return self.controller.get_indicators()
 
@@ -90,6 +93,9 @@ class ModuleController(object):
 
     def get_serial(self) -> str:
         return self._bomb.serial
+
+    def get_f_time(self) -> str:
+        return self._bomb.get_f_time()
 
     def make_solved(self) -> None:
         self.is_solved = True
