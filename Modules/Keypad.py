@@ -101,6 +101,7 @@ class KeypadModel(BaseModule.ModuleModel):
         if button_index in self._buttons_pressed:
             return True
         if button_index == self._solution[0]:
+            self._solution.pop(0)
             self._buttons_pressed.append(button_index)
             if len(self._buttons_pressed) == 4:
                 self.controller.make_solved()
@@ -115,7 +116,7 @@ class KeypadView(BaseModule.ModuleView):
     BUTTON_0_TOP_Y = 60
     BUTTON_SIDE_LENGTH = 40
     BUTTON_GAP = 20
-    COL_NEUTRAL = "gray"
+    COL_NEUTRAL = "light gray"
     COL_CORRECT = "green"
     SYMBOL_FONT = ("TkDefaultFont", 20)
 
