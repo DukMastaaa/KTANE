@@ -104,8 +104,7 @@ class SimpleWiresView(BaseModule.ModuleView):
                 top_x, top_y, top_x + self.WIRE_WIDTH, top_y + self.WIRE_HEIGHT,
                 fill=wire, outline=const.COL_BLACK
             )
-            self.tag_bind(rect_id, "<ButtonPress-1>",
-                          self.on_wire_click)
+            self.tag_bind(rect_id, const.BIND_LEFT_PRESS, self.on_wire_click)
             self._rect_ids.append(rect_id)
 
     def on_wire_click(self, event) -> None:

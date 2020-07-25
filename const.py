@@ -96,3 +96,7 @@ COL_BLACK = "black"
 COL_YELLOW = "yellow"
 COL_GREEN = "green"
 COL_WHITE = "white"
+
+# tkinter event bindings
+BIND_LEFT_PRESS = "<ButtonPress-1>"
+BIND_LEFT_RELEASE = "<ButtonRelease-1>"

@@ -124,10 +124,10 @@ class TheButtonView(BaseModule.ModuleView):
             fill=const.COL_BLACK, outline=const.COL_BLACK
         )
 
-        self.tag_bind(button_id, "<ButtonPress-1>", self.on_button_press)
-        self.tag_bind(label_id, "<ButtonPress-1>", self.on_button_press)
-        self.tag_bind(button_id, "<ButtonRelease-1>", self.on_button_release)
-        self.tag_bind(label_id, "<ButtonRelease-1>", self.on_button_release)
+        self.tag_bind(button_id, const.BIND_LEFT_PRESS, self.on_button_press)
+        self.tag_bind(label_id, const.BIND_LEFT_PRESS, self.on_button_press)
+        self.tag_bind(button_id, const.BIND_LEFT_RELEASE, self.on_button_release)
+        self.tag_bind(label_id, const.BIND_LEFT_RELEASE, self.on_button_release)
 
     def on_button_press(self, event) -> None:
         self._pressed_time = time.time()
