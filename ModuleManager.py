@@ -3,7 +3,7 @@
 import Modules
 
 # todo: will eventually be replaced with text file and parser
-MODULES = ["SimpleWires", "TheButton", "Keypad"]
+MODULES = ["SimpleWires", "TheButton", "Keypad", "SimonSays"]
 
 
 def get_module_list(bomb_reference, parent_reference) -> list:

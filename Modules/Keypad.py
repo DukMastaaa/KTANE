@@ -96,8 +96,6 @@ class KeypadModel(BaseModule.ModuleModel):
 
     def check_solution(self, button_index: int) -> bool:
         """Returns whether the button pressed is next in the correct sequence."""
-        # todo: something's wrong here, investigate this first
-        #       first click registers but all others trigger a strike
         if button_index in self._buttons_pressed:
             return True
         if button_index == self._solution[0]:
