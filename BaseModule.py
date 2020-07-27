@@ -64,7 +64,6 @@ class ModuleView(tk.Canvas):
 
 
 class ModuleController(object):
-    # todo: there's something not right here - pycharm doesn't know these have been overridden
     model_class = ModuleModel
     view_class = ModuleView
 
