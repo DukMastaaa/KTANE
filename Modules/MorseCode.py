@@ -89,6 +89,10 @@ class MorseCodeModel(BaseModule.ModuleModel):
 
 
 class MorseCodeView(BaseModule.ModuleView):
+    DIT_DURATION = 200
+    DAH_MULTIPLIER = 3
+    CHAR_END_MULTIPLIER = 3
+    WORD_END_MULTIPLIER = 7
 
     def __init__(self, bomb_view, controller: "MorseCodeController"):
         super().__init__(bomb_view, controller)
@@ -101,8 +105,22 @@ class MorseCodeView(BaseModule.ModuleView):
         self.draw_morse_code()
 
     def calculate_flash_schedule(self) -> None:
-        """Calculates """
-        pass
+        """Calculates a "schedule" of flashes and the time duration after the initial flash.
+
+        The flash schedule will be a list of tuples where the first element is bool, indicating
+        whether the light is on or off. The second element indicates the time in ms after
+        the first initial flash.
+        """
+        chars = self._morse.split()
+        time_counter = 0
+        for char in chars:  # todo: timings below are wrong
+            if char == ".":
+                time_counter += self.DIT_DURATION
+                self._flash_schedule.append((True, time_counter))
+            elif char == "-":
+                time_counter += self.DIT_DURATION * self.DAH_MULTIPLIER
+                self._flash_schedule.append((True, time_counter))
+
 
     def draw_morse_code(self) -> None:
         pass
