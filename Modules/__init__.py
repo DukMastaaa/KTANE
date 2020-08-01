@@ -3,3 +3,4 @@ import Modules.SimpleWires
 import Modules.TheButton
 import Modules.Keypad
 import Modules.SimonSays
+import Modules.MorseCode
